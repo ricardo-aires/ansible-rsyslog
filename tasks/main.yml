@@ -1,0 +1,55 @@
+---
+# tasks file for rsyslog setup
+- name: ensure rsyslog is installed
+  yum:
+    name: rsyslog
+    state: present
+
+- name: ensure logging is configured
+  copy:
+    src: rsyslog.conf
+    dest: /etc/rsyslog.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart rsyslog
+
+- name: ensure rsylog.service.d dir exists
+  file:
+    path: /etc/systemd/system/rsylog.service.d/
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: setup number of open files
+  template:
+    src: increase_nofile_limit.conf.j2
+    dest: /etc/systemd/system/rsylog.service.d/increase_nofile_limit.conf
+    owner: root
+    group: root
+    mode: '0640'
+  notify: restart rsyslog
+
+- name: ensure rsyslog is running and enabled
+  service:
+    name: rsyslog
+    state: started
+    enabled: yes
+  register: rsyslog
+
+- name: ensure logrotate daemons is setup
+  copy:
+    src: logrotate
+    dest: /etc/cron.daily/
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: ensure logrotate is setup
+  copy:
+    src: syslog
+    dest: /etc/logrotate.d/
+    owner: root
+    group: root
+    mode: '0644'

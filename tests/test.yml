@@ -1,0 +1,8 @@
+---
+- hosts: all
+  become: true
+
+  tasks:
+    - name: apply rsyslog setup role
+      include_role:
+        name: ansible-rsyslog
