@@ -31,12 +31,15 @@
     mode: '0640'
   notify: restart rsyslog
 
+- name: Force all notified handlers to run at this point
+  meta: flush_handlers
+
 - name: ensure rsyslog is running and enabled
   service:
     name: rsyslog
     state: started
     enabled: yes
-  register: rsyslog
+    daemon_reload: yes
 
 - name: ensure logrotate daemons is setup
   copy:

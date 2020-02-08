@@ -5,4 +5,4 @@
     name: rsyslog
     state: restarted
     enabled: yes
-  when: rsyslog.status.ActiveState != 'inactive'
+    daemon_reload: yes
